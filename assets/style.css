@@ -1,5 +1,9 @@
 body {
-	background: pink; 
-	color: brown;
+	background: #ffd8fe; 
+	color: #7b6c86;
 	font-family: cursive;
+}
+span{
+	font-size: 80px;
+	color: #555555;
 }
