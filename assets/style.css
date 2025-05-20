@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "Anthony";
+  src: url("Anthony.woff") format("woff");
+}
+
 body {
 	background: #ffd8fe; 
 	color: #7b6c86;
