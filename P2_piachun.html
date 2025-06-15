@@ -1,0 +1,285 @@
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+      <meta charset="UTF-8" />
+      <title>뉴스 스크랩</title>
+      <style>
+        @font-face {
+          font-family: '210MGothic';
+          src: url('./210MGothicOTF.woff') format('woff');
+        }
+
+        body {
+          font-family: '210MGothic', sans-serif;
+          margin: 0;
+          display: flex;
+          background: #FAF9F0;
+          height: 100vh;
+        }
+
+        #sidebar {
+          width: 700px; 
+          background: #E9E9E9;
+          padding: 2rem 1rem;
+          border-right: 1px solid #ddd;
+          height: 100vh;
+          box-sizing: border-box;
+          overflow-y: auto;
+        }
+
+        .short-news {
+          font-size: 1.6rem;     /* ✅ 기본 16px 기준 약 25.6px */
+          font-weight: 700;      /* ✅ 굵게 (Bold) */
+          margin-bottom: 0.2rem; /* ✅ 날짜랑 붙이기 위해 간격 최소화 */
+        }
+        .date-text {
+          margin-top: 0rem;
+          margin-bottom: 2rem;
+          color: #666;
+          font-weight: 400;
+        }
+
+        #sidebar h1 {
+          font-size: 18px;
+          margin-bottom: 2rem;
+        }
+
+        #sidebar ul {
+          list-style: none;
+          padding: 0;
+        }
+
+        #sidebar li {
+          margin-bottom: 1rem;
+          font-size: 16px;
+          color: #111;
+          cursor: pointer;
+        }
+
+        #sidebar ul li.active {
+          font-weight: bold;
+          background-color: #DEF409;  /* ✅ 하이라이팅 배경색 */
+          color: black;               /* ✅ 글자색은 검정이 자연스럽다면 설정 */
+          border-radius: 6px;
+          padding: 4px 8px;
+
+        }
+
+        #content {
+         flex-grow: 1;
+         padding: 3rem;
+         height: 100vh; /* ✅ 본문 영역도 꽉 채우기 */
+         box-sizing: border-box;
+         overflow-y: auto; /* ✅ 만약 콘텐츠 넘치면 스크롤 가능 */
+       }
+
+       #news-container {
+        font-size: 42px;
+        line-height: 1.6;
+        font-weight: bold;
+        white-space: pre-wrap;
+        user-select: text;
+      }
+
+      mark {
+        background-color: #DEF409;
+        padding: 0 4px;
+      }
+
+      #buttons {
+        margin-top: 2rem;
+      }
+
+      button {
+        padding: 0.5rem 1.5rem;
+        font-size: 16px;
+        border: none;
+        border-radius: 20px;
+        margin-right: 1rem;
+        background-color: #DEF409;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      button:hover {
+        background-color: #d1d100;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <aside id="sidebar">
+      <p class="short-news">short-news</p>
+      <p id="today-date" class="date-text"></p>
+      <ul>
+        <li data-category="시사" onclick="loadNews('시사')">current category</li>
+        <li data-category="오늘의 HOT" onclick="loadNews('오늘의 HOT')">today HOT</li>
+        <li data-category="스포츠" onclick="loadNews('스포츠')">sports</li>
+        <li data-category="연예" onclick="loadNews('연예')">entertainment</li>
+        <li data-category="경제" onclick="loadNews('경제')">economy</li>
+        <li data-category="과학/기술" onclick="loadNews('과학/기술')">science</li>
+        <li data-category="추천 뉴스" onclick="loadNews('추천 뉴스')">recommended news</li>
+        <li data-category="주요 뉴스" onclick="loadNews('주요 뉴스')">a maojor news</li>
+      </ul>
+    </aside>
+
+    <main id="content">
+      <div id="news-container">로딩 중...</div>
+
+      <div id="buttons">
+        <button onclick="saveHighlight()">Save highlights</button>
+        <button onclick="toggleSaved()">See saved highlights</button>
+        <button onclick="clearHighlights()">Remove highlights</button>
+        <button onclick="showNextNews()">next news</button>
+      </div>
+      <div id="saved-list" style="display:none; margin-top:2rem; font-size:18px; line-height:1.5;"></div>
+    </main>
+
+    <script>
+      const container = document.getElementById('news-container');
+
+      let newsItems = [];
+      let currentIndex = 0;
+      let scrapList = [];
+        let lastSelectedText = '';  // 마지막 드래그된 텍스트 저장용
+
+
+        function highlightSelection() {
+          const selection = window.getSelection();
+          if (selection.isCollapsed) return;
+
+          const range = selection.getRangeAt(0);
+          const mark = document.createElement('mark');
+          mark.appendChild(range.extractContents());
+          range.insertNode(mark);
+          selection.removeAllRanges();
+        }
+
+        function saveHighlight() {
+          if (lastSelectedText) {
+            scrapList.push(lastSelectedText);
+            alert('하이라이트가 저장되었습니다.');
+      lastSelectedText = ''; // ✅ 저장 후 초기화
+    } else {
+      alert('저장할 하이라이트를 먼저 선택하세요.');
+    }
+  }
+
+
+  function setActiveCategory(category) {
+    const items = document.querySelectorAll('#sidebar ul li');
+    items.forEach((li) => {
+      if (li.dataset.category === category) {
+        li.classList.add('active');
+      } else {
+        li.classList.remove('active');
+      }
+    });
+  }
+
+  function toggleSaved() {
+    const savedBox = document.getElementById('saved-list');
+    if (savedBox.style.display === 'none') {
+      savedBox.style.display = 'block';
+      savedBox.innerHTML = scrapList.length > 0
+      ? scrapList.map((s, i) => `<div><b>${i + 1}.</b> ${s}</div>`).join('<hr>')
+      : '저장된 하이라이트가 없습니다.';
+    } else {
+      savedBox.style.display = 'none';
+    }
+  }
+
+  async function loadNews(category = '뉴스') {
+  setActiveCategory(category);  // ✅ 선택된 항목 강조
+
+  try {
+    const res = await fetch(`http://localhost:4000/news?query=${encodeURIComponent(category)}`);
+    const data = await res.json();
+    newsItems = Array.isArray(data.items) ? data.items : [];
+    currentIndex = 0;  // ✅ 여기 반드시 있어야 다음 뉴스도 제대로 시작됨
+    if (newsItems.length === 0) {
+      document.getElementById('news-container').textContent = '뉴스가 없습니다.';
+    } else {
+      renderNews();
+    }
+  } catch (err) {
+    document.getElementById('news-container').textContent = '뉴스 불러오기 실패';
+  }
+}
+
+function cleanText(text) {
+  return text
+  .replace(/<[^>]+>/g, '')
+  .replace(/&quot;/g, '"')
+  .replace(/&apos;/g, "'")
+  .replace(/&amp;/g, '&')
+  .replace(/\(?사진=연합뉴스\)?/g, '')
+  .replace(/\b연합뉴스,?\b/g, '')
+  .trim();
+}
+
+function renderNews() {
+  if (currentIndex >= newsItems.length) {
+    container.textContent = '더 이상 뉴스가 없습니다.';
+    return;
+  }
+  const text = cleanText(newsItems[currentIndex]?.description || '뉴스 없음');
+  container.innerHTML = text;
+}
+
+function showNextNews() {
+  if (currentIndex + 1 < newsItems.length) {
+    currentIndex++;
+    renderNews();
+  } else {
+    alert('더 이상 뉴스가 없습니다.');
+  }
+}
+
+function highlightSelection() {
+  const selection = window.getSelection();
+  if (selection.isCollapsed) return;
+
+  const range = selection.getRangeAt(0);
+  const selectedText = selection.toString().trim();
+
+  const mark = document.createElement('mark');
+  mark.appendChild(range.extractContents());
+  range.insertNode(mark);
+  selection.removeAllRanges();
+
+  if (selectedText) {
+        lastSelectedText = selectedText;  // ✅ 여기서 저장
+      }
+    }
+
+    function setTodayDate() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      document.getElementById('today-date').textContent = `${yyyy}.${mm}.${dd}`;
+    }
+
+setTodayDate(); // ✅ 실행!
+
+
+function clearHighlights() {
+  const marks = container.querySelectorAll('mark');
+  marks.forEach(mark => {
+    const parent = mark.parentNode;
+    parent.replaceChild(document.createTextNode(mark.textContent), mark);
+    parent.normalize();
+  });
+}
+
+container.addEventListener('mouseup', () => {
+  setTimeout(highlightSelection, 0);
+});
+
+        loadNews('오늘의 HOT'); // 페이지 로드 시 뉴스 로드
+      </script>
+
+    </body>
+    </html>
