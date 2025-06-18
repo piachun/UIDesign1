@@ -1,4 +1,4 @@
-// index.js
+$// index.js
 const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
@@ -9,7 +9,6 @@ const PORT = 4000;
 
 app.use(cors());
 
-// ✅ 뉴스 목록 전체 반환
 app.get('/news', async (req, res) => {
   const query = req.query.query || '뉴스';
   const url = `https://openapi.naver.com/v1/search/news.json?query=${encodeURIComponent(query)}&display=10`;
@@ -23,15 +22,14 @@ app.get('/news', async (req, res) => {
     });
 
     const items = response.data.items;
-    console.log('✅ 받은 뉴스 수:', items.length);
+    console.log(' 받은 뉴스 수:', items.length);
     res.json({ items });
   } catch (error) {
-    console.error('❌ 뉴스 API 오류:', error.message);
+    console.error(' 뉴스 API 오류:', error.message);
     res.status(500).send('뉴스 가져오기 실패');
   }
 });
 
-// (선택) 기사 본문 크롤링용
 app.get('/article', async (req, res) => {
   const url = req.query.url;
   if (!url) return res.status(400).send('Missing URL');
@@ -50,5 +48,5 @@ app.get('/article', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ 서버 실행 중: http://localhost:${PORT}`);
+  console.log(` 서버 실행 중: http://localhost:${PORT}`);
 });
