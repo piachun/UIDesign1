@@ -16,6 +16,7 @@ body {
   padding: 20px;
   background: #fffad3;
   color: dimgray;
+  position: relative;
 }
 
 body::before {
@@ -39,23 +40,68 @@ h1 {
   color: black;
 }
 
+h1, h2 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
 p {
   font-size: 24px;
   line-height: 32px;
 }
 
 .desc {
-  margin-bottom: 20px; /* 원하는 만큼 조절 가능 */
+  margin-bottom: 20px;
 }
 
-h1, h2 {
-  margin-top: 20px;
-  margin-bottom: 10px;
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px; 
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.desc-box {
+  background-color: rgba(255, 255, 255, 0.6); 
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 500px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px); 
+}
+
+.choonsik-img {
+  width: 120px;
+  height: auto;
+  border-radius: 12px;
 }
 
 span {
   font-size: 80px;
   color: #555555;
+}
+
+.center-section {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 40px auto;
+}
+
+.center-section ul {
+  list-style-position: inside;
+  padding-left: 0;
+}
+
+.center-section li {
+  margin-bottom: 8px;
+}
+
+.center-section a {
+  text-decoration: underline;
+  color: blue;
 }
 
 @media (max-width: 768px) {
