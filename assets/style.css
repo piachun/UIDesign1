@@ -1,44 +1,79 @@
-*{
-	margin: 0px;
-	padding: 0px;
-	box-sizing: border-box;	
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'FredokaVariable';
+  src: url('fontessets/Fredoka-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 1 1000;
 }
 
 body {
-	padding: 20px;
-	background: #ffd8fe; 
-	color: dimgray;
+  font-family: 'FredokaVariable', sans-serif;
+  font-variation-settings: "wght" 400, "wdth" 100;
+  padding: 20px;
+  background: #fffad3;
+  color: dimgray;
 }
 
-h1 { 
-	color: black;
-	font-family: courier, monospace, Arial, Helvetica Neue, Helvetica, cursive;
-	text-decoration:;
-	font-style:;
- }
+h1 {
+  font-family: 'FredokaVariable', sans-serif;
+  font-variation-settings: "wght" 700, "wdth" 120;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  color: black;
+}
 
 p {
-	font-size: 24px;
-	line-height: 32px;
-	letter-spacing:;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.desc {
+  margin-bottom: 20px; /* 원하는 만큼 조절 가능 */
 }
 
 h1, h2 {
-	margin-top: 20px;
-	margin-bottom: 10px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
-span{
-	font-size: 80px;
-	color: #555555;
+span {
+  font-size: 80px;
+  color: #555555;
 }
 
-/*	font-family: courier, monospace, Arial, Helvetica Neue, Helvetica, cursive;
-	font-size:14px;
-	line-height:;
-	text-decoration:;
-	font-style:;
-	letter-spacing:;
-/* html{
-	font-size: 14px;
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 1.5em;
+    line-height: 1.2em;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  #grid {
+    display: block;
+  }
+
+  #left-column {
+    width: 100%;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+
+  span {
+    font-size: 48px;
+  }
 }
