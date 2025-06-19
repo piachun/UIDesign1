@@ -18,6 +18,20 @@ body {
   color: dimgray;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('10 복사본.png');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5; 
+  z-index: -1;  
+}
+
 h1 {
   font-family: 'FredokaVariable', sans-serif;
   font-variation-settings: "wght" 700, "wdth" 120;
